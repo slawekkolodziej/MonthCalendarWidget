@@ -17,7 +17,7 @@
 @implementation TodayViewController{
 	NSEdgeInsets insets;
 	
-	NSTextField* titleText;
+	NSButton* titleText;
 	CGFloat width;
 	NSCalendar* calendar;
 	NSDate* currentDate;
@@ -40,17 +40,16 @@
 - (void)viewDidLoad{
 	offsetInMonths=0;
 	NSView* content=[self view];
-	titleText=[[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 320, 320)];
-	[titleText setStringValue:@"W"];
-	[titleText setBezeled:NO];
-	[titleText setDrawsBackground:NO];
-	[titleText setEditable:NO];
-	[titleText setSelectable:NO];
-	[titleText setTextColor:[NSColor textColor]];
+	titleText=[[NSButton alloc] initWithFrame:NSMakeRect(0, 0, 320, 320)];
+	[titleText setTitle:@"W"];
+	[titleText setBezelStyle:NO];
+	[titleText setBordered:false];
 	[titleText setAlignment:NSTextAlignmentCenter];
 	[titleText setFont:[NSFont boldSystemFontOfSize:[NSFont systemFontSize]]];
+	[titleText setTarget:self];
+	[titleText setAction:@selector(onButtonClick:)];
 	[content addSubview:titleText];
-	
+
 	calendarView=[[CWCalendarView alloc] initWithFrame:NSMakeRect(0, 0, 210, 200)];
 	[content addSubview:calendarView];
 	
@@ -108,7 +107,7 @@
 	formatter.dateStyle=NSDateFormatterMediumStyle;
 	formatter.locale=locale;
 	[formatter setLocalizedDateFormatFromTemplate:@"MMMMYYYY"];
-	[titleText setStringValue:[formatter stringFromDate:currentDate]];
+	[titleText setTitle:[formatter stringFromDate:currentDate]];
 	NSInteger era, year, month;
 	[calendar getEra:&era year:&year month:&month day:NULL fromDate:currentDate];
 	[calendarView setCurrentEra:era year:year month:month];
@@ -119,6 +118,8 @@
 		offsetInMonths--;
 	}else if(sender==nextButton){
 		offsetInMonths++;
+	}else if(sender==titleText){
+		offsetInMonths=0;
 	}
 	[self updateCurrentDay];
 }
